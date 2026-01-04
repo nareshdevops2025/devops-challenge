@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        bat 'mvn clean package'
+      }
+    }
+    stage('SonarQube') {
+      steps {
+        bat 'mvn sonar:sonar'
+      }
+    }
+    stage('Docker Build') {
+      steps {
+        bat 'docker build -t hello:latest -f docker/Dockerfile .'
+      }
+    }
+    stage('Security Scan') {
+      steps {
+        bat 'trivy image hello:latest'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        bat 'helm upgrade --install hello helm/hello-app'
+      }
+    }
+  }
+}
