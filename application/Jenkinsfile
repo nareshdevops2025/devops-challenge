@@ -11,7 +11,7 @@ stages
     steps {
         sh '''
         uname -a
-        which mvn || echo "Maven missing"
+        mvn -v
         java -version
         '''
     }
