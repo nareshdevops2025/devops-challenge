@@ -9,16 +9,16 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-     echo "before build"
+        echo "before build"
         bat 'mvn clean package'
-     echo "afterbuild"
+        echo "after build"
       }
     }
     stage('SonarQube') {
       steps {
-echo "before sonar"
+        echo "before sonar"
         bat 'mvn sonar:sonar'
-echo "after sonar"
+        echo "after sonar"
       }
     }
     stage('Docker Build') {
