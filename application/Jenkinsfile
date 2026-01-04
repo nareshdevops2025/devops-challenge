@@ -10,10 +10,10 @@ pipeline {
     stage('Build') {
       steps {
         echo "before build"
-        cmd /c echo Jenkins CMD OK
-        cmd /c java -version
-        cmd /c mvn -version
-        cmd /c mvn clean package
+         bat '''
+                cmd /c mvn -version
+                cmd /c mvn clean package
+                '''
         echo "after build"
       }
     }
