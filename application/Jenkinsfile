@@ -10,30 +10,30 @@ pipeline {
     stage('Build') {
       steps {
      echo "before build"
-        bat 'mvn clean package'
+        'mvn clean package'
      echo "afterbuild"
       }
     }
     stage('SonarQube') {
       steps {
 echo "before sonar"
-        bat 'mvn sonar:sonar'
+        'mvn sonar:sonar'
 echo "after sonar"
       }
     }
     stage('Docker Build') {
       steps {
-        bat 'docker build -t hello:latest -f docker/Dockerfile .'
+        'docker build -t hello:latest -f docker/Dockerfile .'
       }
     }
     stage('Security Scan') {
       steps {
-        bat 'trivy image hello:latest'
+        'trivy image hello:latest'
       }
     }
     stage('Deploy') {
       steps {
-        bat 'helm upgrade --install hello helm/hello-app'
+        'helm upgrade --install hello helm/hello-app'
       }
     }
   }
