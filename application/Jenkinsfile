@@ -5,16 +5,31 @@ pipeline {
         maven 'maven-3'
         jdk 'JDK'
     }
-stages
-{
- stage('Debug') {
-    steps {
-        sh '''
-        uname -a
-        mvn -v
-        java -version
-        '''
+stages {
+    stage('Build') {
+      steps {
+        sh 'mvn clean package'
+      }
     }
-}
-}
+    stage('SonarQube') {
+      steps {
+        sh 'mvn sonar:sonar'
+      }
+    }
+    stage('Docker Build') {
+      steps {
+        sh 'docker build -t hello:latest -f docker/Dockerfile .'
+      }
+    }
+    stage('Security Scan') {
+      steps {
+        sh 'trivy image hello:latest'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh 'helm upgrade --install hello helm/hello-app'
+      }
+    }
+  }
 }
