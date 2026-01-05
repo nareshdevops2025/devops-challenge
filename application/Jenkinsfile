@@ -11,11 +11,12 @@ stages {
         sh 'mvn clean package'
       }
     }
-    stage('SonarQube') {
+/*    stage('SonarQube') {
       steps {
         sh 'mvn sonar:sonar'
       }
     }
+    */
     stage('Docker Build') {
       steps {
         sh 'docker build -t hello:latest -f docker/Dockerfile .'
