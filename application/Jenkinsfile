@@ -22,7 +22,7 @@ pipeline {
 
       stage('Build Image') {
             steps {
-                dir('app') {
+                dir('application') {
                     sh 'mvn clean package -DskipTests'
                 }
             }
