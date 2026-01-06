@@ -26,6 +26,23 @@ pipeline {
                 }
             }
         }
+
+  stage('Terraform Init') {
+    steps {
+          dir('terraform') {
+        script {
+            if (isUnix()) {
+               sh 'terraform init'
+            } else {
+                bat 'terraform init'
+            }
+        }
+          }
+    }
+}
+
+
+    
       stage('Terraform Init') {
             steps {
                 dir('terraform') {
@@ -33,7 +50,7 @@ pipeline {
                 }
             }
         }
-
+/*
       stage('Terraform Validate') {
             steps {
                 dir('terraform') {
@@ -67,7 +84,7 @@ pipeline {
     
 
         
-/*    stage('SonarQube') {
+   stage('SonarQube') {
       steps {
         sh 'mvn sonar:sonar'
       }
