@@ -1,19 +1,13 @@
 pipeline {
-  agent
-  {
-       label 'windows-minikube'
-  }
-
+  agent any
   tools {
         maven 'maven-3'
         jdk 'JDK'
     }
-
   environment {
     IMAGE_NAME = "devops-challenge"
     REGISTRY = "localhost:5000"
     TF_IN_AUTOMATION = "true"
-
   }
 
   stages {
@@ -32,7 +26,7 @@ pipeline {
                 }
             }
         }
-stage('Terraform Init') {
+      stage('Terraform Init') {
             steps {
                 dir('terraform') {
                     bat 'terraform init'
@@ -40,7 +34,7 @@ stage('Terraform Init') {
             }
         }
 
-        stage('Terraform Validate') {
+      stage('Terraform Validate') {
             steps {
                 dir('terraform') {
                     bat 'terraform validate'
