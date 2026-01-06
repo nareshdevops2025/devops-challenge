@@ -14,14 +14,25 @@ pipeline {
 
     stage('Checkout') {
       steps {
+        echo "code checkout from github"
         git branch: 'main',
             url: 'https://github.com/nareshdevops2025/devops-challenge.git'
       }
     }
 
-      stage('Build Image') {
+     stage('Testing') {
+            steps {
+        dir('application') {
+             echo "maven test"
+                    sh 'mvn test'
+                }
+            }
+        }
+
+      stage('Package Build') {
             steps {
                 dir('application') {
+                  echo "packaging java application"
                     sh 'mvn clean package -DskipTests'
                 }
             }
@@ -30,11 +41,8 @@ pipeline {
   stage('Terraform Init') {
     steps {
           dir('terraform') {
-        script {
-            if (isUnix()) {
-               sh 'terraform init'
-            } else {
-                bat 'terraform init'
+            echo "terraform initialization"
+              bat 'terraform init'
             }
         }
           }
@@ -105,6 +113,7 @@ pipeline {
         sh 'helm upgrade --install hello helm/hello-app'
       }
     }
-      */
+     
   }
 }
+ */
