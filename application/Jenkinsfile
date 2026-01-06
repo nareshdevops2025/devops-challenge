@@ -29,7 +29,7 @@ pipeline {
       stage('Terraform Init') {
             steps {
                 dir('terraform') {
-                    bat 'terraform init'
+                    sh 'terraform init'
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
       stage('Terraform Validate') {
             steps {
                 dir('terraform') {
-                    bat 'terraform validate'
+                    sh 'terraform validate'
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('terraform') {
-                    bat 'terraform plan'
+                    sh 'terraform plan'
                 }
             }
         }
@@ -53,15 +53,15 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform') {
-                    bat 'terraform apply -auto-approve'
+                    sh 'terraform apply -auto-approve'
                 }
             }
         }
 
         stage('Verify Cluster') {
             steps {
-                bat 'minikube status'
-                bat 'kubectl get nodes'
+                sh 'minikube status'
+                sh 'kubectl get nodes'
             }
         }
     
