@@ -70,7 +70,7 @@ stage('Terraform Init') {
                 bat 'kubectl get nodes'
             }
         }
-    }
+    
 
     post {
         success {
@@ -80,7 +80,7 @@ stage('Terraform Init') {
             echo "❌ Pipeline failed"
         }
     }
-}
+
     
 /*    stage('SonarQube') {
       steps {
