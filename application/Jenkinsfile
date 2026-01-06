@@ -38,6 +38,17 @@ pipeline {
             }
         }
 
+    stage('Docker Build') {
+    steps {
+        dir('application') {
+            echo "Building Docker image"
+            sh """
+                docker build -t ${IMAGE_NAME}:latest .
+                docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
+            """
+        }
+    }
+}
   stage('Terraform Init') {
     steps {
           dir('terraform') {
