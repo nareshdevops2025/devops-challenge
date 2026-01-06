@@ -42,7 +42,7 @@ pipeline {
     steps {
           dir('terraform') {
             echo "terraform initialization"
-              bat 'terraform init'
+              sh 'terraform init'
             }
         }
           }
