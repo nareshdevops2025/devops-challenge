@@ -1,5 +1,8 @@
 pipeline {
-  agent any
+  agent
+  {
+       label 'windows-minikube'
+  }
 
   tools {
         maven 'maven-3'
@@ -9,6 +12,8 @@ pipeline {
   environment {
     IMAGE_NAME = "devops-challenge"
     REGISTRY = "localhost:5000"
+    TF_IN_AUTOMATION = "true"
+
   }
 
   stages {
@@ -27,6 +32,56 @@ pipeline {
                 }
             }
         }
+stage('Terraform Init') {
+            steps {
+                dir('terraform') {
+                    bat 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                dir('terraform') {
+                    bat 'terraform validate'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir('terraform') {
+                    bat 'terraform plan'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir('terraform') {
+                    bat 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+        stage('Verify Cluster') {
+            steps {
+                bat 'minikube status'
+                bat 'kubectl get nodes'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Minikube cluster created successfully"
+        }
+        failure {
+            echo "❌ Pipeline failed"
+        }
+    }
+}
+    
 /*    stage('SonarQube') {
       steps {
         sh 'mvn sonar:sonar'
