@@ -1,10 +1,11 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM jenkins/jenkins:lts-jdk17
 
-RUN addgroup -S app && adduser -S app -G app
-USER app
+USER root
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    usermod -aG docker jenkins && \
+    apt-get clean
 
-WORKDIR /app
-COPY target/hello-1.0.0.jar app.jar
+USER jenkins
 
-EXPOSE 8081
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+
