@@ -40,7 +40,7 @@ pipeline {
           }
     }
 }
-
+/*
 
     
       stage('Terraform Init') {
@@ -50,7 +50,7 @@ pipeline {
                 }
             }
         }
-/*
+
       stage('Terraform Validate') {
             steps {
                 dir('terraform') {
