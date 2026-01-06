@@ -72,16 +72,7 @@ stage('Terraform Init') {
         }
     
 
-    post {
-        success {
-            echo "✅ Minikube cluster created successfully"
-        }
-        failure {
-            echo "❌ Pipeline failed"
-        }
-    }
-
-    
+        
 /*    stage('SonarQube') {
       steps {
         sh 'mvn sonar:sonar'
