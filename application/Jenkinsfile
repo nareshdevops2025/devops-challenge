@@ -42,24 +42,36 @@ pipeline {
     steps {
         dir('application') {
             echo "Building Docker image"
-            sh """
+          sh  'docker build -t ${IMAGE_NAME}:latest .'
+           /* sh """
                 docker build -t ${IMAGE_NAME}:latest .
                 docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
             """
+            */
+          
         }
     }
 }
 
-        stage('Docker Push') {
+      stage('Run Container') {
             steps {
-                          echo "pushing Docker image to local registry"
+              dir('application') {
+            echo "Building Docker image"
+                sh 'docker run -d -p 8081:8080 ${IMAGE_NAME}:latest'
+            }
+        }
+      }
+        /*stage('Docker Push') {
+            steps {
+                 echo "pushing Docker image to local registry"
 
                 sh """
                     docker push ${REGISTRY}/${IMAGE_NAME}:latest
                 """
             }
         }
-  stage('Terraform Init') {
+        */
+ /* stage('Terraform Init') {
     steps {
           dir('terraform') {
             echo "terraform initialization"
