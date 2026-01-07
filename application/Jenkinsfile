@@ -9,7 +9,6 @@ pipeline {
     REGISTRY = "localhost:5000"
     TF_IN_AUTOMATION = "true"
   }
-
   stages {
 
     stage('Checkout') {
@@ -49,9 +48,9 @@ pipeline {
             """
             */
           
+          }
         }
-    }
-}
+      }
 
       stage('Run Container') {
             steps {
@@ -61,6 +60,8 @@ pipeline {
             }
         }
       }
+	  }
+	  }
         /*stage('Docker Push') {
             steps {
                  echo "pushing Docker image to local registry"
@@ -70,8 +71,8 @@ pipeline {
                 """
             }
         }
-        */
- /* stage('Terraform Init') {
+        
+ stage('Terraform Init') {
     steps {
           dir('terraform') {
             echo "terraform initialization"
@@ -81,9 +82,7 @@ pipeline {
           }
     }
 }
-/*
-
-    
+  
       stage('Terraform Init') {
             steps {
                 dir('terraform') {
@@ -122,9 +121,7 @@ pipeline {
                 sh 'kubectl get nodes'
             }
         }
-    
-
-        
+            
    stage('SonarQube') {
       steps {
         sh 'mvn sonar:sonar'
@@ -148,5 +145,5 @@ pipeline {
     }
      
   }
-}
+
  */
