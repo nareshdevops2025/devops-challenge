@@ -10,10 +10,7 @@ pipeline {
         BUILD_TAG = "${BUILD_NUMBER}"
         IMAGE_WITH_BUILD = "${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_TAG}"
         IMAGE_LATEST = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
-<<<<<<< HEAD
 		NAMESPACE = "devops"
-=======
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
     }
   stages {
 
@@ -25,19 +22,11 @@ pipeline {
       }
     }
 
-<<<<<<< HEAD
 	stage('Testing') {
           steps {
             dir('application') {
              echo "Unit testing"
              bat 'mvn test'
-=======
-     stage('Testing') {
-            steps {
-        dir('application') {
-             echo "maven test"
-                    bat 'mvn test'
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
                 }
             }
         }
@@ -45,54 +34,37 @@ pipeline {
 	stage('Package Build') {
             steps {
                 dir('application') {
-<<<<<<< HEAD
                   echo "Packaging java application"
                   bat 'mvn clean package -DskipTests'
-=======
+
                   echo "packaging java application"
                     bat 'mvn clean package -DskipTests'
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
                 }
             }
         }
 
-<<<<<<< HEAD
 	stage('Docker Build') {
          steps {
              dir('application') {
                echo "Building Docker image"
                bat "docker build -t %IMAGE_WITH_BUILD% ."
-=======
-    stage('Docker Build') {
-    steps {
-        dir('application') {
             echo "Building Docker image"
                 bat "docker build -t %IMAGE_WITH_BUILD% ."
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
                      }
         }
       }
 
-<<<<<<< HEAD
 	stage('Tag Image as Latest') {
             steps {
 			    echo "Tag docker image"
-=======
-      stage('Tag Image as Latest') {
-            steps {
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
+     
                 bat "docker tag %IMAGE_WITH_BUILD% %IMAGE_LATEST%"
             }
         }
 
-<<<<<<< HEAD
 	stage('DockerHub Login') {
             steps {
-			echo "Login into dockerhub"
-=======
-        stage('DockerHub Login') {
-            steps {
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
+				echo "Login into dockerhub"
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
@@ -103,14 +75,9 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
 	stage('Push Docker Images') {
             steps {
-				echo "Push image into dockerhub"
-=======
-        stage('Push Docker Images') {
-            steps {
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
+     			echo "Push image into dockerhub"
                 bat """
                 docker push %IMAGE_WITH_BUILD%
                 docker push %IMAGE_LATEST%
@@ -118,20 +85,13 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
 	stage('Verify Tags') {
-            steps {
+              steps {
 				echo "Verify image tag"
-=======
-        stage('Verify Tags') {
-            steps {
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
                 bat "docker images | findstr %IMAGE_NAME%"
             }
         }
-    }
-
-<<<<<<< HEAD
+   
 	stage('Verify Minikube') {
             steps {
 				echo "Verify Minikube"
@@ -172,7 +132,7 @@ pipeline {
                 """
             }
         }
-    }
+    
     post {
         success {
             echo "✅ Kubernetes image pushed successfully!"
@@ -182,115 +142,5 @@ pipeline {
         }
     }
   
-	  
+	}  
 	  }
-	  
-        /*stage('Docker Push') {
-            steps {
-=======
-    post {
-        success {
-            echo "✅ Docker image tagged and pushed successfully!"
-        }
-        failure {
-            echo "❌ Docker tagging or push failed"
-        }
-    }
-  
-	  
-	  }
-	  
-        /*stage('Docker Push') {
-            steps {
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
-                 echo "pushing Docker image to local registry"
-
-                sh """
-                    docker push ${REGISTRY}/${IMAGE_NAME}:latest
-                """
-            }
-        }
-        
-<<<<<<< HEAD
-	stage('Terraform Init') {
-=======
- stage('Terraform Init') {
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
-    steps {
-          dir('terraform') {
-            echo "terraform initialization"
-              sh 'terraform init'
-            }
-        }
-          }
-    }
-}
-  
-      stage('Terraform Init') {
-            steps {
-                dir('terraform') {
-                    sh 'terraform init'
-                }
-            }
-        }
-
-      stage('Terraform Validate') {
-            steps {
-                dir('terraform') {
-                    sh 'terraform validate'
-                }
-            }
-        }
-
-        stage('Terraform Plan') {
-            steps {
-                dir('terraform') {
-                    sh 'terraform plan'
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                dir('terraform') {
-                    sh 'terraform apply -auto-approve'
-                }
-            }
-        }
-
-        stage('Verify Cluster') {
-            steps {
-                sh 'minikube status'
-                sh 'kubectl get nodes'
-            }
-        }
-            
-   stage('SonarQube') {
-      steps {
-        sh 'mvn sonar:sonar'
-      }
-    }
-  
-    stage('Docker Build') {
-      steps {
-        sh 'docker build -t hello:latest -f docker/Dockerfile .'
-      }
-    }
-    stage('Security Scan') {
-      steps {
-        sh 'trivy image hello:latest'
-      }
-    }
-    stage('Deploy') {
-      steps {
-        sh 'helm upgrade --install hello helm/hello-app'
-      }
-    }
-     
-  }
-
-<<<<<<< HEAD
- */
-=======
- */
->>>>>>> e914eea6032628db8c70fe36a1b02078467f8f3b
