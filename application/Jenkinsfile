@@ -5,61 +5,152 @@ pipeline {
         jdk 'JDK'
     }
   environment {
-    IMAGE_NAME = "devops-challenge"
-    REGISTRY = "localhost:5000"
-    TF_IN_AUTOMATION = "true"
-  }
-
+        DOCKERHUB_USER = "nareshbashipangu"
+        IMAGE_NAME = "devops-challenge"
+        BUILD_TAG = "${BUILD_NUMBER}"
+        IMAGE_WITH_BUILD = "${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_TAG}"
+        IMAGE_LATEST = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
+		NAMESPACE = "devops"
+    }
   stages {
 
-    stage('Checkout') {
-      steps {
-        echo "code checkout from github"
-        git branch: 'main',
+	stage('Checkout') {
+         steps {
+          echo "Code checkout from github"
+          git branch: 'main',
             url: 'https://github.com/nareshdevops2025/devops-challenge.git'
       }
     }
 
-     stage('Testing') {
-            steps {
-        dir('application') {
-             echo "maven test"
-                    sh 'mvn test'
+	stage('Testing') {
+          steps {
+            dir('application') {
+             echo "Unit testing"
+             bat 'mvn test'
                 }
             }
         }
 
-      stage('Package Build') {
+	stage('Package Build') {
             steps {
                 dir('application') {
-                  echo "packaging java application"
-                    sh 'mvn clean package -DskipTests'
+                  echo "Packaging java application"
+                  bat 'mvn clean package -DskipTests'
                 }
             }
         }
 
-    stage('Docker Build') {
-    steps {
-        dir('application') {
-            echo "Building Docker image"
-            sh """
-                docker build -t ${IMAGE_NAME}:latest .
-                docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
-            """
+	stage('Docker Build') {
+         steps {
+             dir('application') {
+               echo "Building Docker image"
+               bat "docker build -t %IMAGE_WITH_BUILD% ."
+                     }
+        }
+      }
+
+	stage('Tag Image as Latest') {
+            steps {
+			    echo "Tag docker image"
+                bat "docker tag %IMAGE_WITH_BUILD% %IMAGE_LATEST%"
+            }
+        }
+
+	stage('DockerHub Login') {
+            steps {
+			echo "Login into dockerhub"
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                }
+            }
+        }
+
+	stage('Push Docker Images') {
+            steps {
+				echo "Push image into dockerhub"
+                bat """
+                docker push %IMAGE_WITH_BUILD%
+                docker push %IMAGE_LATEST%
+                """
+            }
+        }
+
+	stage('Verify Tags') {
+            steps {
+				echo "Verify image tag"
+                bat "docker images | findstr %IMAGE_NAME%"
+            }
         }
     }
-}
 
-        stage('Docker Push') {
+	stage('Verify Minikube') {
             steps {
-                          echo "pushing Docker image to local registry"
+				echo "Verify Minikube"
+                bat """
+                minikube status
+                kubectl config use-context minikube
+                """
+            }
+        }
+
+	stage('Create Namespace') {
+            steps {
+				echo "Create namespace in Minikube"
+                bat """
+                kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
+                """
+            }
+        }
+
+	stage('Deploy Application') {
+            steps {
+				echo "Deploy application in kubernetes namespace in Minikube"
+                bat """
+                powershell -Command "(Get-Content k8s/deployment.yaml) -replace 'IMAGE_PLACEHOLDER', '%FULL_IMAGE%' | Set-Content k8s/deploy.yaml"
+                kubectl apply -n %NAMESPACE% -f k8s/deploy.yaml
+                kubectl apply -n %NAMESPACE% -f k8s/service.yaml
+                """
+            }
+        }
+
+	stage('Verify Rollout') {
+            steps {
+				echo "Verify rollout"
+                bat """
+                kubectl rollout status deployment/devops-challenge -n %NAMESPACE%
+                kubectl get pods -n %NAMESPACE%
+                kubectl get svc -n %NAMESPACE%
+                """
+            }
+        }
+    }
+    post {
+        success {
+            echo "✅ Kubernetes image pushed successfully!"
+        }
+        failure {
+            echo "❌ Docker tagging or push failed"
+        }
+    }
+  
+	  
+	  }
+	  
+        /*stage('Docker Push') {
+            steps {
+                 echo "pushing Docker image to local registry"
 
                 sh """
                     docker push ${REGISTRY}/${IMAGE_NAME}:latest
                 """
             }
         }
-  stage('Terraform Init') {
+        
+	stage('Terraform Init') {
     steps {
           dir('terraform') {
             echo "terraform initialization"
@@ -69,9 +160,7 @@ pipeline {
           }
     }
 }
-/*
-
-    
+  
       stage('Terraform Init') {
             steps {
                 dir('terraform') {
@@ -110,9 +199,7 @@ pipeline {
                 sh 'kubectl get nodes'
             }
         }
-    
-
-        
+            
    stage('SonarQube') {
       steps {
         sh 'mvn sonar:sonar'
@@ -136,5 +223,5 @@ pipeline {
     }
      
   }
-}
+
  */
