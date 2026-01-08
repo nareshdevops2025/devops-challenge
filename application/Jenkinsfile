@@ -133,14 +133,7 @@ pipeline {
             }
         }
     
-    post {
-        success {
-            echo "✅ Kubernetes image pushed successfully!"
-        }
-        failure {
-            echo "❌ Docker tagging or push failed"
-        }
-    }
+   
   
 	}  
 	  }
