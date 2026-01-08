@@ -10,7 +10,7 @@ pipeline {
         BUILD_TAG = "${BUILD_NUMBER}"
         IMAGE_WITH_BUILD = "${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_TAG}"
         IMAGE_LATEST = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
-		NAMESPACE = "devops"
+		NAMESPACE = "staging"
 	    KUBECONFIG = "C:\\Users\\Hp\\.kube\\config"
     }
   stages {
@@ -122,7 +122,7 @@ pipeline {
 	stage('Deploy Application') {
             steps {
 				echo "Deploy application in kubernetes namespace in Minikube"
-                bat 'kubectl apply -n %NAMESPACE% -f k8s/deploy.yaml'
+                bat 'kubectl apply -n %NAMESPACE% -f k8s/deployment.yaml'
                 bat 'kubectl apply -n %NAMESPACE% -f k8s/service.yaml'
             
             }
