@@ -11,6 +11,7 @@ pipeline {
         IMAGE_WITH_BUILD = "${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_TAG}"
         IMAGE_LATEST = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
 		NAMESPACE = "devops"
+	    KUBECONFIG = "C:\\Users\\Hp\\.kube\\config"
     }
   stages {
 
@@ -91,8 +92,32 @@ pipeline {
                 bat "docker images | findstr %IMAGE_NAME%"
             }
         }
-   
-	stage('Verify Minikube') {
+
+        stage('Verify kubectl') {
+            steps {
+                bat 'kubectl version --client'
+            }
+        }
+
+        stage('Verify Kubernetes Context') {
+            steps {
+                bat 'kubectl config get-contexts'
+            }
+        }
+
+        stage('Switch to Minikube Context') {
+            steps {
+                bat 'kubectl config use-context minikube'
+            }
+        }
+
+        stage('Verify Cluster Access') {
+            steps {
+                bat 'kubectl get nodes'
+            }
+        }
+    
+	/*stage('Verify Minikube') {
             steps {
 				echo "Verify Minikube"
                 bat """
@@ -131,7 +156,7 @@ pipeline {
                 kubectl get svc -n %NAMESPACE%
                 """
             }
-        }
+        }*/
     
    
   
