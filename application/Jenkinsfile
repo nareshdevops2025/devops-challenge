@@ -60,7 +60,7 @@ pipeline {
             steps {
               dir('application') {
             echo "Building Docker image"
-                bat 'docker run -d -p 8082:8080 %IMAGE_NAME%:latest'
+                bat 'docker run -d -p 9090:8080 %IMAGE_NAME%:latest'
             }
         }
       }
