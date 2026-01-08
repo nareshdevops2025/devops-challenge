@@ -36,9 +36,6 @@ pipeline {
             steps {
                 dir('application') {
                   echo "Packaging java application"
-                  bat 'mvn clean package -DskipTests'
-
-                  echo "packaging java application"
                     bat 'mvn clean package -DskipTests'
                 }
             }
@@ -49,16 +46,13 @@ pipeline {
              dir('application') {
                echo "Building Docker image"
                bat "docker build -t %IMAGE_WITH_BUILD% ."
-            echo "Building Docker image"
-                bat "docker build -t %IMAGE_WITH_BUILD% ."
                      }
         }
       }
 
 	stage('Tag Image as Latest') {
             steps {
-			    echo "Tag docker image"
-     
+			    echo "Tag docker image"     
                 bat "docker tag %IMAGE_WITH_BUILD% %IMAGE_LATEST%"
             }
         }
@@ -117,46 +111,31 @@ pipeline {
             }
         }
     
-	/*stage('Verify Minikube') {
-            steps {
-				echo "Verify Minikube"
-                bat """
-                minikube status
-                kubectl config use-context minikube
-                """
-            }
-        }
-
+	
 	stage('Create Namespace') {
             steps {
 				echo "Create namespace in Minikube"
-                bat """
-                kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -
-                """
-            }
+                bat 'kubectl create namespace %NAMESPACE% --dry-run=client -o yaml | kubectl apply -f -'
+                      }
         }
 
 	stage('Deploy Application') {
             steps {
 				echo "Deploy application in kubernetes namespace in Minikube"
-                bat """
-                powershell -Command "(Get-Content k8s/deployment.yaml) -replace 'IMAGE_PLACEHOLDER', '%FULL_IMAGE%' | Set-Content k8s/deploy.yaml"
-                kubectl apply -n %NAMESPACE% -f k8s/deploy.yaml
-                kubectl apply -n %NAMESPACE% -f k8s/service.yaml
-                """
+                bat 'kubectl apply -n %NAMESPACE% -f k8s/deploy.yaml'
+                bat 'kubectl apply -n %NAMESPACE% -f k8s/service.yaml'
+            
             }
         }
 
 	stage('Verify Rollout') {
             steps {
-				echo "Verify rollout"
-                bat """
-                kubectl rollout status deployment/devops-challenge -n %NAMESPACE%
-                kubectl get pods -n %NAMESPACE%
-                kubectl get svc -n %NAMESPACE%
-                """
+			   echo "Verify rollout"
+               bat 'kubectl rollout status deployment/devops-challenge -n %NAMESPACE%'
+               bat 'kubectl get pods -n %NAMESPACE%'
+               bat 'kubectl get svc -n %NAMESPACE%'
             }
-        }*/
+        }
     
    
   
