@@ -45,7 +45,7 @@ pipeline {
     steps {
         dir('application') {
             echo "Building Docker image"
-         bat 'docker build -t %IMAGE_NAME%:latest .'
+         bat 'docker build -t %IMAGE_NAME%:43 .'
            /* sh """
                 docker build -t ${IMAGE_NAME}:latest .
                 docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
@@ -60,7 +60,7 @@ pipeline {
             steps {
               dir('application') {
             echo "Building Docker image"
-                bat 'docker run -d -p 9090:8080 %IMAGE_NAME%:latest'
+                bat 'docker run -d -p 9090:8080 %IMAGE_NAME%:43'
             }
         }
       }
