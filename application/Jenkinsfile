@@ -119,7 +119,7 @@ pipeline {
 	stage('Verify Rollout') {
             steps {
 			   echo "Verify rollout"
-               bat 'kubectl rollout restart deployment devops-challenge -n %NAMESPACE% --timeout=20m'
+               bat 'kubectl rollout restart deployment devops-challenge -n %NAMESPACE%'
                bat 'kubectl rollout status deployment/devops-challenge -n %NAMESPACE% --timeout=20m'
                bat 'kubectl get pods -n %NAMESPACE%'
                bat 'kubectl get svc -n %NAMESPACE%'
