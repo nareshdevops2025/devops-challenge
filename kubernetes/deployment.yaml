@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: devops-challenge
-        image: nareshbashipangu/devops-challenge:${BUILD_NUMBER}
+        image: IMAGE_PLACEHOLDER
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
