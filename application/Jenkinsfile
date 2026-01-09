@@ -12,8 +12,7 @@ pipeline {
         IMAGE_NAME = "devops-challenge"
         BUILD_TAG = "${BUILD_NUMBER}"
         IMAGE_WITH_BUILD = "${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_TAG}"
-        IMAGE_LATEST = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
-		NAMESPACE = "staging"
+		NAMESPACE = "local"
 	    KUBECONFIG = "C:\\Users\\Hp\\.kube\\config"
     }
   stages {
@@ -44,22 +43,6 @@ pipeline {
             }
         }
 
-	stage('Docker Build') {
-         steps {
-             dir('application') {
-               echo "Building Docker image"
-               bat "docker build -t %IMAGE_WITH_BUILD% ."
-                     }
-        }
-      }
-
-	stage('Tag Image as Latest') {
-            steps {
-			    echo "Tag docker image"     
-                bat "docker tag %IMAGE_WITH_BUILD% %IMAGE_LATEST%"
-            }
-        }
-
 	stage('DockerHub Login') {
             steps {
 				echo "Login into dockerhub"
@@ -73,13 +56,17 @@ pipeline {
             }
         }
 
-	stage('Push Docker Images') {
-            steps {
-     			echo "Push image into dockerhub"
-                bat  'docker push %IMAGE_WITH_BUILD%'
-                         }
+	  stage('Docker Build') {
+         steps {
+             dir('application') {
+               echo "Building Docker image"
+               bat "docker build -t %IMAGE_WITH_BUILD% ."
+			   echo "Push image into dockerhub"
+               bat  'docker push %IMAGE_WITH_BUILD%'
+                     }
         }
-
+      }
+	
 	stage('Verify Tags') {
               steps {
 				echo "Verify image tag"
@@ -131,7 +118,7 @@ pipeline {
 	stage('Verify Rollout') {
             steps {
 			   echo "Verify rollout"
-               bat 'kubectl rollout status deployment/devops-challenge -n %NAMESPACE% --timeout=10m'
+               bat 'kubectl rollout status deployment/devops-challenge -n %NAMESPACE% --timeout=20m'
                bat 'kubectl get pods -n %NAMESPACE%'
                bat 'kubectl get svc -n %NAMESPACE%'
             }
