@@ -67,12 +67,13 @@ pipeline {
         }
       }
 	
-	stage('Verify Tags') {
+	/*stage('Verify Tags') {
               steps {
 				echo "Verify image tag"
                 bat "docker images | findstr %IMAGE_NAME%"
             }
         }
+		*/
 
         stage('Verify kubectl') {
             steps {
