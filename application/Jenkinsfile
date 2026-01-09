@@ -76,11 +76,8 @@ pipeline {
 	stage('Push Docker Images') {
             steps {
      			echo "Push image into dockerhub"
-                bat """
-                docker push %IMAGE_WITH_BUILD%
-                docker push %IMAGE_LATEST%
-                """
-            }
+                bat  'docker push %IMAGE_WITH_BUILD%'
+                         }
         }
 
 	stage('Verify Tags') {
@@ -134,7 +131,7 @@ pipeline {
 	stage('Verify Rollout') {
             steps {
 			   echo "Verify rollout"
-               bat 'kubectl rollout status deployment/devops-challenge -n %NAMESPACE%'
+               bat 'kubectl rollout status deployment/devops-challenge -n %NAMESPACE%' --timeout=10m
                bat 'kubectl get pods -n %NAMESPACE%'
                bat 'kubectl get svc -n %NAMESPACE%'
             }
