@@ -93,12 +93,12 @@ pipeline {
             }
         }
 
-        stage('Verify Cluster Access') {
+        /*stage('Verify Cluster Access') {
             steps {
                 bat 'kubectl get nodes'
             }
         }
-    
+    */
 	
 	stage('Create Namespace') {
             steps {
