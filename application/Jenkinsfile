@@ -87,13 +87,13 @@ pipeline {
             }
         }
 
-        stage('Switch to Minikube Context') {
+       /* stage('Switch to Minikube Context') {
             steps {
                 bat 'kubectl config use-context minikube'
             }
         }
 
-        /*stage('Verify Cluster Access') {
+        stage('Verify Cluster Access') {
             steps {
                 bat 'kubectl get nodes'
             }
