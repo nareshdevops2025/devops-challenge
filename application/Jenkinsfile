@@ -21,7 +21,7 @@ pipeline {
          steps {
           echo "Code checkout from github"
           git branch: 'main',
-            url: 'https://github.com/nareshdevops2025/devops-challenge.git'
+            url: 'https://github.com/nareshdevops2025/HelloDockerRepo.git'
       }
     }
 
